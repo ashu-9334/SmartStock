@@ -34,12 +34,22 @@ def error(message, code=400):
     return jsonify({"error": message}), code
 
 
+
 @app.route("/")
 def home():
     return send_from_directory(
         os.path.join(PROJECT_FOLDER, "frontend"),
         "index.html"
     )
+
+
+@app.route("/<path:filename>")
+def frontend_files(filename):
+    return send_from_directory(
+        os.path.join(PROJECT_FOLDER, "frontend"),
+        filename
+    )
+
 @app.route("/api/status")
 def status():
     return jsonify({"status": "success", "project": "SmartStock"})
