@@ -1,0 +1,13 @@
+.git
+.DS_Store
+.vscode/
+__pycache__/
+*.pyc
+products.dat
+sales.dat
+main
+web_bridge
+SmartStock
+*.dSYM/
+backup_before_web_sales
+frontend/style_backup.css

@@ -17,3 +17,8 @@ web_bridge
 # Python cache
 __pycache__/
 *.pyc
+# Local backups and generated executables
+backup_before_web_sales
+SmartStock
+main.dSYM/
+frontend/style_backup.css

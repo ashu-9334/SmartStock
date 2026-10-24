@@ -1,209 +1,62 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartStock | Inventory Dashboard</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartStock | Inventory Manager</title><link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-icon">S</div><div><h2>SmartStock</h2><p>Inventory Manager</p></div></div>
+    <p class="menu-label">MAIN MENU</p>
+    <nav class="sidebar-nav">
+      <button class="nav-link active" data-page="dashboard">▦ &nbsp; Dashboard</button>
+      <button class="nav-link" data-page="products">▤ &nbsp; Products</button>
+      <button class="nav-link" data-page="sales">↗ &nbsp; Sales</button>
+      <button class="nav-link" data-page="inventory">☷ &nbsp; Inventory</button>
+    </nav>
+    <div class="sidebar-footer"><span class="status-dot"></span><span>Local system</span></div>
+  </aside>
+  <main class="main-content">
+    <header class="topbar"><div><p class="breadcrumb">SmartStock / <span id="breadcrumbPage">Dashboard</span></p><h1 id="pageTitle">Dashboard Overview</h1><p class="page-subtitle">Manage products, stock and sales in one place.</p></div><div class="profile"><div class="profile-avatar">A</div><div><strong>Administrator</strong><span>Store Manager</span></div></div></header>
 
-    <div class="app-layout">
+    <section class="page-section" id="page-dashboard">
+      <div class="stats-grid">
+        <article class="stat-card"><div class="stat-top"><span>Total Products</span><span class="stat-icon blue">▦</span></div><p id="totalProducts" class="stat-value">0</p><p class="stat-note">Products in inventory</p></article>
+        <article class="stat-card"><div class="stat-top"><span>Total Stock</span><span class="stat-icon purple">▤</span></div><p id="totalStock" class="stat-value">0</p><p class="stat-note">Units available</p></article>
+        <article class="stat-card"><div class="stat-top"><span>Total Revenue</span><span class="stat-icon green">₹</span></div><p id="totalRevenue" class="stat-value">₹0</p><p class="stat-note">Revenue from recorded sales</p></article>
+        <article class="stat-card"><div class="stat-top"><span>Total Sales</span><span class="stat-icon orange">↗</span></div><p id="totalSales" class="stat-value">0</p><p class="stat-note">Recorded transactions</p></article>
+        <article class="stat-card"><div class="stat-top"><span>Items Sold</span><span class="stat-icon red">✓</span></div><p id="totalItemsSold" class="stat-value">0</p><p class="stat-note">Units sold in total</p></article>
+      </div>
+      <section class="panel"><div class="panel-heading"><div><h2>Quick Actions</h2><p>Common tasks for your store</p></div></div><div class="actions"><button id="quickAddBtn">+ Add Product</button><button id="quickSellBtn">Sell Product</button><button id="quickSalesBtn" class="button-light">View Sales</button></div></section>
+      <section class="panel"><div class="panel-heading"><div><h2>Current Products</h2><p>Latest inventory overview</p></div><button class="button-light" data-go="products">Manage Products</button></div><div class="table-container"><table><thead><tr><th>ID</th><th>Product</th><th>Category</th><th>Price</th><th>Stock</th></tr></thead><tbody id="dashboardProducts"><tr><td colspan="5">Loading products...</td></tr></tbody></table></div></section>
+    </section>
 
-        <aside class="sidebar">
-            <div class="brand">
-                <div class="brand-icon">S</div>
-                <div>
-                    <h2>SmartStock</h2>
-                    <p>Inventory Manager</p>
-                </div>
-            </div>
+    <section class="page-section hidden" id="page-products">
+      <section class="panel"><div class="panel-heading"><div><h2 id="productFormTitle">Add Product</h2><p>Add a product or select Edit in the table to change it.</p></div></div>
+        <form id="productForm" class="form-grid"><input type="hidden" id="editingProductId">
+          <div class="form-group"><label for="productId">Product ID</label><input id="productId" type="number" min="1" required></div>
+          <div class="form-group"><label for="productName">Product name</label><input id="productName" maxlength="49" required placeholder="e.g. Wireless Mouse"></div>
+          <div class="form-group"><label for="productCategory">Category</label><input id="productCategory" maxlength="29" required placeholder="e.g. Electronics"></div>
+          <div class="form-group"><label for="productPrice">Price (₹)</label><input id="productPrice" type="number" min="0" step="0.01" required></div>
+          <div class="form-group"><label for="productQuantity">Stock quantity</label><input id="productQuantity" type="number" min="0" step="1" required></div>
+          <div class="form-buttons"><button type="submit" id="saveProductBtn">Add Product</button><button type="button" id="cancelEditBtn" class="button-light hidden">Cancel edit</button></div>
+        </form><p id="productMessage" class="message" role="status"></p>
+      </section>
+      <section class="panel"><div class="panel-heading"><div><h2>All Products</h2><p>Update product details or remove a product.</p></div><input class="search-input" id="productSearch" placeholder="Search products..."></div><div class="table-container"><table><thead><tr><th>ID</th><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsTable"><tr><td colspan="6">Loading products...</td></tr></tbody></table></div></section>
+    </section>
 
-            <p class="menu-label">MAIN MENU</p>
+    <section class="page-section hidden" id="page-sales">
+      <section class="panel"><div class="panel-heading"><div><h2>Sell a Product</h2><p>Select a product and quantity. Stock is reduced after a successful sale.</p></div></div>
+        <form id="saleForm" class="form-grid"><div class="form-group"><label for="saleProductId">Product</label><select id="saleProductId" required><option value="">Choose a product</option></select></div><div class="form-group"><label for="saleQuantity">Quantity</label><input type="number" id="saleQuantity" min="1" step="1" required placeholder="Quantity to sell"></div><div class="form-buttons"><button type="submit">Process Sale</button></div></form><p id="saleMessage" class="message" role="status"></p>
+      </section>
+      <section class="panel"><div class="panel-heading"><div><h2>Sales History</h2><p>Recorded transactions from sales.dat</p></div><button class="button-light" id="refreshSalesBtn">Refresh</button></div><div class="table-container"><table><thead><tr><th>Product ID</th><th>Product</th><th>Quantity</th><th>Unit Price</th><th>Total</th></tr></thead><tbody id="salesTable"><tr><td colspan="5">Loading sales...</td></tr></tbody></table></div></section>
+    </section>
 
-            <nav class="sidebar-nav">
-                <a href="#" class="nav-link active">▦ &nbsp; Dashboard</a>
-                <a href="#inventory" class="nav-link">▤ &nbsp; Products</a>
-                <a href="#actions" class="nav-link">↗ &nbsp; Sales</a>
-                <a href="#inventory" class="nav-link">☷ &nbsp; Inventory</a>
-            </nav>
-
-            <div class="sidebar-footer">
-                <div class="status-dot"></div>
-                <span>System Online</span>
-            </div>
-        </aside>
-
-        <main class="main-content">
-
-            <header class="topbar">
-                <div>
-                    <p class="breadcrumb">Workspace / Overview</p>
-                    <h1>Dashboard Overview</h1>
-                    <p class="page-subtitle">
-                        Welcome back! Here's what's happening with your store.
-                    </p>
-                </div>
-                <div class="profile">
-                    <div class="profile-avatar">A</div>
-                    <div>
-                        <strong>Administrator</strong>
-                        <span>Store Manager</span>
-                    </div>
-                </div>
-            </header>
-
-            <section class="stats-grid">
-                <article class="stat-card">
-                    <div class="stat-top">
-                        <span>Total Products</span>
-                        <span class="stat-icon blue">▦</span>
-                    </div>
-                    <p id="totalProducts" class="stat-value">0</p>
-                    <p class="stat-note">Products in inventory</p>
-                </article>
-
-                <article class="stat-card">
-                    <div class="stat-top">
-                        <span>Total Stock</span>
-                        <span class="stat-icon purple">▤</span>
-                    </div>
-                    <p id="totalStock" class="stat-value">0</p>
-                    <p class="stat-note">Units available</p>
-                </article>
-
-                <article class="stat-card">
-                    <div class="stat-top">
-                        <span>Total Revenue</span>
-                        <span class="stat-icon green">₹</span>
-                    </div>
-                    <p id="totalRevenue" class="stat-value">₹0</p>
-                    <p class="stat-note">Revenue from recorded sales</p>
-                </article>
-
-                <article class="stat-card">
-                    <div class="stat-top">
-                        <span>Total Sales</span>
-                        <span class="stat-icon orange">↗</span>
-                    </div>
-                    <p id="totalSales" class="stat-value">0</p>
-                    <p class="stat-note">Recorded transactions</p>
-                </article>
-
-                <article class="stat-card">
-                    <div class="stat-top">
-                        <span>Items Sold</span>
-                        <span class="stat-icon red">✓</span>
-                    </div>
-                    <p id="totalItemsSold" class="stat-value">0</p>
-                    <p class="stat-note">Units sold in total</p>
-                </article>
-            </section>
-
-            <section id="actions" class="panel actions-panel">
-                <div class="panel-heading">
-                    <div>
-                        <h2>Quick Actions</h2>
-                        <p>Access your frequently used tools</p>
-                    </div>
-                </div>
-
-                <div class="actions">
-                    <button id="viewProductsBtn" type="button">
-                        View Products
-                    </button>
-                    <button id="sellProductBtn" type="button">
-                        Sell Product
-                    </button>
-                    <button id="salesReportBtn" type="button">
-                        Sales Report
-                    </button>
-                </div>
-            </section>
-
-
-            <section id="saleFormSection" class="panel" hidden>
-                <div class="panel-heading">
-                    <div>
-                        <h2>Sell a Product</h2>
-                        <p>Enter the product details for this sale.</p>
-                    </div>
-                </div>
-
-                <form id="saleForm">
-                    <div class="form-group">
-                        <label for="saleProductId">Product ID</label>
-                        <input
-                            type="number"
-                            id="saleProductId"
-                            min="1"
-                            required
-                            placeholder="Enter product ID"
-                        >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="saleQuantity">Quantity</label>
-                        <input
-                            type="number"
-                            id="saleQuantity"
-                            min="1"
-                            required
-                            placeholder="Enter quantity"
-                        >
-                    </div>
-
-                    <div class="form-buttons">
-                        <button type="submit">Process Sale</button>
-                        <button type="button" id="cancelSaleBtn">Cancel</button>
-                    </div>
-
-                    <p id="saleMessage" role="status"></p>
-                </form>
-            </section>
-
-
-            <section id="inventory" class="panel inventory-panel">
-                <div class="panel-heading">
-                    <div>
-                        <h2>Product Inventory</h2>
-                        <p>View the products currently stored in your inventory</p>
-                    </div>
-                    <span class="live-badge">
-                        <span class="status-dot"></span>
-                        Live Data
-                    </span>
-                </div>
-
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Product ID</th>
-                                <th>Product Name</th>
-                                <th>Category</th>
-                                <th>Price (₹)</th>
-                                <th>Stock</th>
-                            </tr>
-                        </thead>
-                        <tbody id="productTableBody">
-                            <tr>
-                                <td colspan="5">Loading products...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            <footer class="page-footer">
-                SmartStock Inventory Management System
-                <span>Built for small businesses</span>
-            </footer>
-
-        </main>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
+    <section class="page-section hidden" id="page-inventory">
+      <section class="panel"><div class="panel-heading"><div><h2>Inventory & Stock</h2><p>Products with low stock are highlighted.</p></div><input class="search-input" id="inventorySearch" placeholder="Search inventory..."></div><div class="table-container"><table><thead><tr><th>ID</th><th>Product</th><th>Category</th><th>Price</th><th>Available Stock</th><th>Status</th></tr></thead><tbody id="inventoryTable"><tr><td colspan="6">Loading inventory...</td></tr></tbody></table></div></section>
+    </section>
+    <footer class="page-footer"><span>SmartStock Inventory Management System</span><span>Built for small businesses</span></footer>
+  </main>
+</div><script src="script.js"></script>
+</body></html>
