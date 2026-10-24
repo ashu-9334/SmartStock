@@ -1,0 +1,19 @@
+
+# Inventory and sales data
+products.dat
+sales.dat
+
+# Compiled programs
+main
+web_bridge
+
+# Debug files
+*.dSYM/
+
+# macOS and editor files
+.DS_Store
+.vscode/
+
+# Python cache
+__pycache__/
+*.pyc
